@@ -58,19 +58,11 @@ struct SearchView: View {
 struct SettingsView: View {
     @EnvironmentObject var model: SkyModel
     @EnvironmentObject var loc: LocationProvider
-    @EnvironmentObject var purchases: PurchaseManager
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("Zenith Pro") {
-                    if purchases.isPro { Label("Unlocked. Thank you!", systemImage: "checkmark.seal.fill").foregroundStyle(Theme.good) }
-                    else {
-                        Button { dismiss(); DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { model.showPaywall = true } } label: { Label("Unlock Pro · \(purchases.price)", systemImage: "lock.open.fill") }
-                        Button("Restore purchase") { Task { await purchases.restore() } }
-                    }
-                }
                 Section("Sky") {
                     Toggle("Constellation lines", isOn: model.binding(\.showConstellations))
                     Toggle("Constellation names", isOn: model.binding(\.showConstellationNames))

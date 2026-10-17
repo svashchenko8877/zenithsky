@@ -5,12 +5,11 @@ struct ZenithApp: App {
     @StateObject private var model = SkyModel()
     @StateObject private var loc = LocationProvider()
     @StateObject private var motion = MotionProvider()
-    @StateObject private var purchases = PurchaseManager()
 
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environmentObject(model).environmentObject(loc).environmentObject(motion).environmentObject(purchases)
+                .environmentObject(model).environmentObject(loc).environmentObject(motion)
                 .preferredColorScheme(.dark)
                 .onAppear { loc.start(); motion.start(); applyLaunchArgs() }
         }
@@ -30,7 +29,7 @@ struct ZenithApp: App {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { model.selected = .body(key) }
         }
         if a.contains("-zgrid") { model.showGrid = true }
-        if a.contains("-zpaywall") { DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { model.showPaywall = true } }
+        if a.contains("-ztimebar") { model.showTimeBar = true }
         if let lat = val("-zlat"), let lon = val("-zlon") { loc.observer = Observer(lat: lat, lon: lon, name: "Test") }
         #endif
     }

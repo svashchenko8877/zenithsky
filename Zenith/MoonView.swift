@@ -7,8 +7,6 @@ private let longDayFmt: DateFormatter = { let f = DateFormatter(); f.dateFormat 
 
 struct MoonView: View {
     @EnvironmentObject var loc: LocationProvider
-    @EnvironmentObject var purchases: PurchaseManager
-    @EnvironmentObject var model: SkyModel
     @State private var month = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: Date()))!
     @State private var selected = Calendar.current.startOfDay(for: Date())
     @State private var displayElong: Double = 0
@@ -212,7 +210,6 @@ struct MoonView: View {
 
     private func startOfMonth(_ d: Date) -> Date { cal.date(from: cal.dateComponents([.year, .month], from: d))! }
     private func shift(_ n: Int) {
-        if !purchases.isPro { model.showPaywall = true; UINotificationFeedbackGenerator().notificationOccurred(.warning); return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         dir = n > 0 ? .trailing : .leading
         appeared = false

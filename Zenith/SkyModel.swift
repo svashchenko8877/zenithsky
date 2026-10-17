@@ -24,7 +24,7 @@ final class SkyModel: ObservableObject {
     @Published var alt: Double = 38 * d2r
     @Published var fov: Double = 75 * d2r
     @Published var useGyro = true
-    @Published var showPaywall = false
+    @Published var showTimeBar = false
 
     // Time
     @Published var clock = Date()

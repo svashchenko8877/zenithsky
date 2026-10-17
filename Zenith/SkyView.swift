@@ -5,7 +5,6 @@ struct SkyView: View {
     @EnvironmentObject var model: SkyModel
     @EnvironmentObject var loc: LocationProvider
     @EnvironmentObject var motion: MotionProvider
-    @EnvironmentObject var purchases: PurchaseManager
     @State private var showSearch = false
     @State private var showSettings = false
     @State private var showTime = false
@@ -21,7 +20,7 @@ struct SkyView: View {
     private func snapshot(_ time: Double) -> SkySnapshot {
         SkySnapshot(date: model.date, observer: loc.observer, basis: basis, fov: model.fov,
                     showConstellations: model.showConstellations, showConstellationNames: model.showConstellationNames,
-                    showLabels: model.showLabels, showDeepSky: model.showDeepSky && purchases.isPro, showGrid: model.showGrid,
+                    showLabels: model.showLabels, showDeepSky: model.showDeepSky, showGrid: model.showGrid,
                     showMilkyWay: model.showMilkyWay, starsInDay: model.starsInDay,
                     selected: model.selected, target: model.target, bodies: model.bodies(at: model.date), time: time, meteors: model.showMeteors)
     }
@@ -66,7 +65,7 @@ struct SkyView: View {
         .ignoresSafeArea()
         .sheet(isPresented: $showSearch) { SearchView().presentationDetents([.medium, .large]) }
         .sheet(isPresented: $showSettings) { SettingsView().presentationDetents([.medium, .large]) }
-        .sheet(isPresented: $model.showPaywall) { PaywallView() }
+        .onAppear { if model.showTimeBar { showTime = true } }
         .animation(.spring(response: 0.5, dampingFraction: 0.78), value: model.selected)
         .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showTime)
     }
@@ -154,9 +153,7 @@ struct SkyView: View {
                 roundButton(model.useGyro ? "gyroscope" : "hand.draw", tint: model.useGyro ? Theme.accent : .white) {
                     if motion.available { model.useGyro.toggle() } else { model.useGyro = false }
                 }
-                roundButton(purchases.isPro ? (showTime ? "clock.fill" : "clock") : "lock.fill", tint: showTime || !model.isLive ? Theme.gold : .white) {
-                    if purchases.isPro { showTime.toggle() } else { model.showPaywall = true }
-                }
+                roundButton(showTime ? "clock.fill" : "clock", tint: showTime || !model.isLive ? Theme.gold : .white) { showTime.toggle() }
                 roundButton(model.redMode ? "moon.fill" : "moon", tint: model.redMode ? .red : .white) { model.redMode.toggle() }
                 roundButton("slider.horizontal.3") { showSettings = true }
             }
